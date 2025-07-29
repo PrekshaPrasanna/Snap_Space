@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Snap Space - Album: {{ album.name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'gallery/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'gallery/css/dark-mode.css' %}" id="dark-mode-styles">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+    :root {
+      --primary: #0E3746;
+      --accent: #BE2623;
+      --light-bg: #EAE8DC;
+      --main-bg: #F4F2EC;
+      --text-main: #0E3746;
+      --text-heading: #0E3746;
+    }
+    body {
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    section, .card, .photo-card {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(14,55,70,0.07);
+    }
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-heading) !important;
+    }
+    .btn {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.8rem 2.1rem;
+      box-shadow: 0 2px 12px rgba(14,55,70,0.08);
+      border: none;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+      display: inline-block;
+      margin-right: 0.7rem;
+      margin-bottom: 0.7rem;
+    }
+    .btn:hover {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+    }
+    .photo-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem;
+      margin-top: 2.5rem;
+    }
+    .photo-list-item {
+      background: var(--light-bg);
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(14,55,70,0.08);
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .photo-list-item img {
+      width: 100%;
+      max-width: 140px;
+      max-height: 140px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 0.7rem;
+    }
+    @media (max-width: 700px) {
+      .photo-list {
+        grid-template-columns: 1fr;
+      }
+    }
+    body.dark-mode {
+      --primary: #F4F2EC;
+      --accent: #BE2623;
+      --light-bg: #0E3746;
+      --main-bg: #0E3746;
+      --text-main: #F4F2EC;
+      --text-heading: #EAE8DC;
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    body.dark-mode section, body.dark-mode .card, body.dark-mode .photo-card, body.dark-mode .photo-list-item {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      box-shadow: 0 2px 16px rgba(234,232,220,0.07);
+    }
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode .btn {
+      background: var(--accent) !important;
+      color: var(--main-bg) !important;
+    }
+    body.dark-mode .btn:hover {
+      background: var(--text-heading) !important;
+      color: var(--light-bg) !important;
+    }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar px-4 py-3 md:px-8">
+            <div class="navbar-brand">
+                <a href="{% url 'dashboard' %}">Snap Space</a>
+            </div>
+            <div class="navbar-menu flex items-center gap-4">
+                <form method="post" action="{% url 'dashboard' %}">{% csrf_token %}<button type="submit" class="btn">Home</button></form>
+                <form method="post" action="{% url 'my_photos' %}">{% csrf_token %}<button type="submit" class="btn">My Photos</button></form>
+                <form method="get" action="{% url 'album_list' %}"><button type="submit" class="btn">My Albums</button></form>
+                <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="btn">Logout</button></form>
+                <button id="dark-mode-toggle" class="dark-mode-toggle"><span class="mode-icon light">☀️</span><span class="mode-icon dark">🌙</span></button>
+            </div>
+        </nav>
+    </header>
+    <main>
+      <section class="max-w-4xl mx-auto px-6 py-12 md:py-20 flex flex-col justify-center min-h-[60vh]">
+        <h1 class="text-3xl md:text-4xl font-extrabold leading-tight text-center mb-6">Album: {{ album.name }}</h1>
+        <div class="flex justify-center mb-6">
+          {% if album.cover_image %}
+            <img src="{{ album.cover_image.url }}" class="album-cover" alt="{{ album.name }} cover" style="max-width: 320px; border-radius: 14px;">
+          {% else %}
+            <img src="{% static 'gallery/img/album_cover.png' %}" class="album-cover" alt="{{ album.name }} cover" style="max-width: 320px; border-radius: 14px;">
+          {% endif %}
+        </div>
+        <p class="text-center mb-2">Owner: {{ album.user.username }}</p>
+        <p class="text-center mb-6">Status: {% if album.is_shared %}Shared{% else %}Private{% endif %}</p>
+        <h2 class="text-xl font-bold mb-4 text-center">Photos in this album:</h2>
+        <div class="photo-list">
+          {% for photo in album.photos.all %}
+          <div class="photo-list-item">
+            <a href="{% url 'photo_detail' photo.pk %}"><img src="{{ photo.image.url }}" alt="{{ photo.title }}"></a>
+            <div class="mt-2 font-semibold">{{ photo.title }}</div>
+          </div>
+          {% empty %}
+          <div class="photo-list-item">No photos in this album.</div>
+          {% endfor %}
+        </div>
+        <div class="flex justify-center gap-4 mt-8">
+          {% if request.user == album.user %}
+          <a href="{% url 'album_edit' album.pk %}" class="btn">Edit Album</a>
+          {% endif %}
+          <a href="{% url 'album_list' %}" class="btn">Back to Albums</a>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; {% now "Y" %} Snap Space. All rights reserved.</p>
+    </footer>
+    <script src="{% static 'gallery/js/main.js' %}"></script>
+    <script src="{% static 'gallery/js/dark-mode.js' %}"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ once: true, duration: 700 });</script>
+</body>
+</html> 

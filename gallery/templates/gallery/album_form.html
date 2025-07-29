@@ -1,0 +1,205 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Snap Space - {% if form.instance.pk %}Edit Album{% else %}Create Album{% endif %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'gallery/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'gallery/css/dark-mode.css' %}" id="dark-mode-styles">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+    :root {
+      --primary: #0E3746;
+      --accent: #BE2623;
+      --light-bg: #EAE8DC;
+      --main-bg: #F4F2EC;
+      --text-main: #0E3746;
+      --text-heading: #0E3746;
+    }
+    body {
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    section, .card, .album-form-card {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(14,55,70,0.07);
+    }
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-heading) !important;
+    }
+    .btn, .btn-primary {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.8rem 2.1rem;
+      box-shadow: 0 2px 12px rgba(14,55,70,0.08);
+      border: none;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn:hover, .btn-primary:hover {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+    }
+    .btn-sm {
+      font-size: 0.95rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+    }
+    input, textarea, select {
+      background: var(--main-bg) !important;
+      color: var(--primary) !important;
+      border: 2px solid var(--light-bg) !important;
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .album-form-card {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .album-form-card h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      color: var(--text-heading);
+    }
+    .album-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .album-form label {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 0.3rem;
+    }
+    .album-form .form-actions {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1.2rem;
+      margin-top: 1rem;
+      justify-content: center;
+    }
+    .album-form .hint {
+      font-size: 0.95rem;
+      color: #888;
+      margin-bottom: 0.5rem;
+    }
+    @media (max-width: 600px) {
+      .album-form-card {
+        padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+        max-width: 98vw;
+      }
+    }
+    body.dark-mode {
+      --primary: #F4F2EC;
+      --accent: #BE2623;
+      --light-bg: #0E3746;
+      --main-bg: #0E3746;
+      --text-main: #F4F2EC;
+      --text-heading: #EAE8DC;
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    body.dark-mode section, body.dark-mode .card, body.dark-mode .album-form-card {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      box-shadow: 0 2px 16px rgba(234,232,220,0.07);
+    }
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode .btn, body.dark-mode .btn-primary {
+      background: var(--accent) !important;
+      color: var(--main-bg) !important;
+    }
+    body.dark-mode .btn:hover, body.dark-mode .btn-primary:hover {
+      background: var(--text-heading) !important;
+      color: var(--light-bg) !important;
+    }
+    body.dark-mode .album-form label {
+      color: var(--text-heading) !important;
+    }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar px-4 py-3 md:px-8">
+            <div class="navbar-brand">
+                <a href="{% url 'dashboard' %}">Snap Space</a>
+            </div>
+            <div class="navbar-menu flex items-center gap-4">
+                <form method="post" action="{% url 'dashboard' %}">{% csrf_token %}<button type="submit" class="btn">Home</button></form>
+                <form method="post" action="{% url 'my_photos' %}">{% csrf_token %}<button type="submit" class="btn">My Photos</button></form>
+                <form method="get" action="{% url 'album_list' %}"><button type="submit" class="btn">My Albums</button></form>
+                <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="btn">Logout</button></form>
+                <button id="dark-mode-toggle" class="dark-mode-toggle"><span class="mode-icon light">☀️</span><span class="mode-icon dark">🌙</span></button>
+            </div>
+        </nav>
+    </header>
+    <main>
+      <section class="max-w-2xl mx-auto px-6 py-12 md:py-20 flex flex-col justify-center min-h-[60vh]">
+        <div class="album-form-card">
+          <h1 class="text-3xl md:text-4xl font-extrabold leading-tight text-center mb-6">{% if form.instance.pk %}Edit Album{% else %}Create Album{% endif %}</h1>
+          <form method="post" class="album-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div>
+              {{ form.name.label_tag }}
+              {{ form.name }}
+            </div>
+            <div>
+              {{ form.photos.label_tag }}
+              <div class="hint">Hold Ctrl (Windows) or Cmd (Mac) to select multiple photos.</div>
+              {{ form.photos }}
+            </div>
+            <div>
+              {{ form.is_shared.label_tag }}
+              {{ form.is_shared }}
+            </div>
+            <div>
+              {{ form.cover_image.label_tag }}
+              {{ form.cover_image }}
+              {% if form.instance.cover_image %}
+                <div class="mt-2">
+                  <span class="hint">Current cover image:</span><br>
+                  <img src="{{ form.instance.cover_image.url }}" alt="Current cover" style="max-width: 180px; border-radius: 8px; margin-top: 6px;">
+                </div>
+              {% endif %}
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn">Save Album</button>
+              <a href="{% url 'album_list' %}" class="btn">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; {% now "Y" %} Snap Space. All rights reserved.</p>
+    </footer>
+    <script src="{% static 'gallery/js/main.js' %}"></script>
+    <script src="{% static 'gallery/js/dark-mode.js' %}"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ once: true, duration: 700 });</script>
+</body>
+</html> 

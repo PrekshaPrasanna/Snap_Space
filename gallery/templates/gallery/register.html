@@ -1,0 +1,299 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <title>Snap Space - Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{% static 'gallery/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'gallery/css/dark-mode.css' %}" id="dark-mode-styles">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0E3746;
+      --accent: #BE2623;
+      --light-bg: #EAE8DC;
+      --main-bg: #F4F2EC;
+      --text-main: #0E3746;
+      --text-heading: #0E3746;
+    }
+    body {
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    .register-card {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      max-width: 420px;
+      margin: 48px auto 32px auto;
+      padding: 2.5rem 2.2rem 2rem 2.2rem;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px 0 rgba(14,55,70,0.13);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 1.2s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .register-logo {
+      font-size: 2.5rem;
+      color: var(--primary);
+      font-weight: 900;
+      margin-bottom: 0.7rem;
+      letter-spacing: 2px;
+    }
+    .register-title {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.7rem;
+      text-align: center;
+    }
+    .register-desc {
+      color: var(--primary);
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+      text-align: center;
+      opacity: 0.85;
+    }
+    .register-form {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+      width: 100%;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.4rem;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.2px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 2px solid var(--light-bg);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: var(--main-bg);
+      color: var(--primary);
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .errorlist {
+      color: var(--accent);
+      font-size: 0.97rem;
+      margin: 0.2rem 0 0.5rem 0;
+      list-style: none;
+      padding: 0;
+    }
+    .register-btn {
+      width: 100%;
+      background: var(--primary);
+      color: var(--light-bg);
+      border: none;
+      border-radius: 10px;
+      padding: 0.9rem 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-top: 0.2rem;
+      margin-bottom: 0.7rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 12px rgba(14,55,70,0.08);
+    }
+    .register-btn:hover {
+      background: var(--accent);
+      color: var(--light-bg);
+    }
+    .register-divider {
+      width: 100%;
+      border: none;
+      border-top: 1.5px solid var(--accent);
+      margin: 1.2rem 0 1.1rem 0;
+      opacity: 0.18;
+    }
+    .register-login-link {
+      text-align: center;
+      font-size: 1rem;
+      color: var(--primary);
+      margin-top: 0.5rem;
+    }
+    .register-login-link a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+    .register-login-link a:hover {
+      color: var(--primary);
+    }
+    .captcha {
+      margin-bottom: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+    }
+    .captcha label {
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+    .captcha input {
+      margin-top: 0.5rem;
+      border-radius: 8px;
+      border: 2px solid var(--light-bg);
+      padding: 0.7rem 1rem;
+      background: var(--main-bg);
+      color: var(--primary);
+      font-size: 1rem;
+      width: 100%;
+    }
+    .captcha input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .captcha .errorlist {
+      color: var(--accent);
+      margin-top: 0.2rem;
+    }
+    @media (max-width: 600px) {
+      .register-card {
+        padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+        max-width: 98vw;
+      }
+    }
+    /* DARK MODE OVERRIDES */
+    body.dark-mode {
+      --primary: #F4F2EC;
+      --accent: #BE2623;
+      --light-bg: #0E3746;
+      --main-bg: #0E3746;
+      --text-main: #F4F2EC;
+      --text-heading: #EAE8DC;
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    body.dark-mode .register-card {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      box-shadow: 0 8px 32px 0 rgba(234,232,220,0.13);
+    }
+    body.dark-mode .register-logo,
+    body.dark-mode .register-title,
+    body.dark-mode .register-desc,
+    body.dark-mode .form-group label,
+    body.dark-mode .register-login-link {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode .form-control,
+    body.dark-mode .captcha input {
+      background: var(--light-bg) !important;
+      color: var(--text-heading) !important;
+      border: 2px solid var(--accent) !important;
+    }
+    body.dark-mode .form-control:focus,
+    body.dark-mode .captcha input:focus {
+      border-color: var(--text-heading) !important;
+      box-shadow: 0 0 0 2px var(--text-heading);
+    }
+    body.dark-mode .register-btn {
+      background: var(--accent) !important;
+      color: var(--main-bg) !important;
+    }
+    body.dark-mode .register-btn:hover {
+      background: var(--text-heading) !important;
+      color: var(--light-bg) !important;
+    }
+    body.dark-mode .register-login-link a {
+      color: var(--accent) !important;
+    }
+    body.dark-mode .register-login-link a:hover {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode .errorlist {
+      color: var(--accent) !important;
+    }
+    body.dark-mode .register-divider {
+      border-top: 1.5px solid var(--accent) !important;
+    }
+    body.dark-mode footer {
+      background: var(--light-bg) !important;
+      color: var(--text-heading) !important;
+      box-shadow: 0 2px 8px rgba(234,232,220,0.04);
+    }
+  </style>
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <a href="{% url 'index' %}">Snap Space</a>
+            </div>
+            <div class="navbar-menu">
+                <button id="dark-mode-toggle" class="dark-mode-toggle" style="margin-left: 10px;">
+                    <span class="mode-icon light">☀️</span>
+                    <span class="mode-icon dark">🌙</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+      <div class="register-card">
+        <div class="register-logo">📸</div>
+        <div class="register-title">Create Your Account</div>
+        <div class="register-desc">Sign up to start sharing and organizing your best moments on Snap Space.</div>
+        <form method="post" class="register-form">
+          {% csrf_token %}
+          {% for field in form.visible_fields %}
+            {% if field.name != 'captcha' %}
+              <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                  <ul class="errorlist">{% for error in field.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+          <div class="captcha">
+            {{ form.captcha.label_tag }}
+            {{ form.captcha }}
+            {% if form.captcha.errors %}
+              <ul class="errorlist">{% for error in form.captcha.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+            {% endif %}
+          </div>
+          <button type="submit" class="register-btn">Create Account</button>
+        </form>
+        <hr class="register-divider">
+        <div class="register-login-link">
+          Already have an account? <a href="{% url 'login' %}">Log In</a>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; {% now "Y" %} Snap Space. All rights reserved.</p>
+    </footer>
+
+    <script src="{% static 'gallery/js/main.js' %}"></script>
+    <script src="{% static 'gallery/js/dark-mode.js' %}"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({ once: true, duration: 700 });
+    </script>
+</body>
+</html>

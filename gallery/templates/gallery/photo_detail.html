@@ -1,0 +1,258 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Snap Space - {{ photo.title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'gallery/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'gallery/css/dark-mode.css' %}" id="dark-mode-styles">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+    :root {
+      --primary: #0E3746;
+      --accent: #BE2623;
+      --light-bg: #EAE8DC;
+      --main-bg: #F4F2EC;
+      --text-main: #0E3746;
+      --text-heading: #0E3746;
+    }
+    body {
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    .photo-detail {
+      max-width: 700px;
+      margin: 2rem auto;
+      background: var(--light-bg);
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(14,55,70,0.08);
+      padding: 2.5rem 2rem;
+    }
+    .photo-detail h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      color: var(--text-heading);
+    }
+    .photo-meta {
+      text-align: center;
+      color: var(--primary);
+      opacity: 0.8;
+      margin-bottom: 1.2rem;
+    }
+    .photo-display {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .photo-display img {
+      max-width: 100%;
+      max-height: 400px;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(14,55,70,0.08);
+    }
+    .photo-description {
+      margin-bottom: 1.5rem;
+    }
+    .photo-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    .btn {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.8rem 2.1rem;
+      box-shadow: 0 2px 12px rgba(14,55,70,0.08);
+      border: none;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn:hover {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+    }
+    .btn-sm {
+      font-size: 0.95rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+    }
+    .count-badge {
+      margin-left: 6px;
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+    @media (max-width: 700px) {
+      .photo-detail {
+        padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+        max-width: 98vw;
+      }
+    }
+    body.dark-mode {
+      --primary: #F4F2EC;
+      --accent: #BE2623;
+      --light-bg: #0E3746;
+      --main-bg: #0E3746;
+      --text-main: #F4F2EC;
+      --text-heading: #EAE8DC;
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    body.dark-mode .photo-detail {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      box-shadow: 0 8px 32px 0 rgba(234,232,220,0.13);
+    }
+    body.dark-mode .photo-detail h1,
+    body.dark-mode .photo-meta {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode .btn {
+      background: var(--accent) !important;
+      color: var(--main-bg) !important;
+    }
+    body.dark-mode .btn:hover {
+      background: var(--text-heading) !important;
+      color: var(--light-bg) !important;
+    }
+    body.dark-mode .count-badge {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar px-4 py-3 md:px-8">
+            <div class="navbar-brand">
+                <a href="{% url 'dashboard' %}">Snap Space</a>
+            </div>
+            <div class="navbar-menu flex items-center gap-4">
+                <form method="post" action="{% url 'dashboard' %}">{% csrf_token %}<button type="submit" class="btn">Home</button></form>
+                <form method="post" action="{% url 'my_photos' %}">{% csrf_token %}<button type="submit" class="btn">My Photos</button></form>
+                <form method="get" action="{% url 'album_list' %}"><button type="submit" class="btn">My Albums</button></form>
+                <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="btn">Logout</button></form>
+                <button id="dark-mode-toggle" class="dark-mode-toggle"><span class="mode-icon light">☀️</span><span class="mode-icon dark">🌙</span></button>
+            </div>
+        </nav>
+    </header>
+    <main>
+      <div class="photo-detail">
+        <h1>{{ photo.title }}</h1>
+        <div class="photo-meta">
+          <p>By: {{ photo.user.username }}</p>
+          <p>Uploaded: {{ photo.created_at|date:"F j, Y" }}</p>
+          {% if photo.category %}
+          <p>Category: {{ photo.category.name }}</p>
+          {% endif %}
+        </div>
+        <div class="photo-display">
+          <img src="{{ photo.image.url }}" alt="{{ photo.title }}">
+        </div>
+        {% if photo.description %}
+        <div class="photo-description">
+          <h3>Description</h3>
+          <p>{{ photo.description }}</p>
+        </div>
+        {% endif %}
+        <div class="photo-actions">
+          <form method="post" action="{% url 'like_photo' photo.pk %}" class="like-form">
+            {% csrf_token %}
+            <button type="submit" class="btn {% if user_has_liked %}liked{% endif %}" id="like-btn">
+              <i class="fa {% if user_has_liked %}fa-heart{% else %}fa-heart-o{% endif %}" id="like-icon"></i>
+              <span>Like</span>
+              <span class="count-badge" id="like-count">{{ photo.likes.count }}</span>
+            </button>
+          </form>
+          <a href="{{ photo.image.url }}" class="btn" download>
+            <i class="fa fa-download"></i>
+            <span>Download</span>
+          </a>
+          <button class="btn share-btn" data-url="{{ request.build_absolute_uri }}">
+            <i class="fa fa-share-alt"></i>
+            <span>Share</span>
+          </button>
+          {% if user == photo.user %}
+          <a href="{% url 'edit_photo' photo.pk %}" class="btn">
+            <i class="fa fa-pencil"></i>
+            <span>Edit</span>
+          </a>
+          <a href="{% url 'delete_photo' photo.pk %}" class="btn danger" id="delete-btn">
+            <i class="fa fa-trash"></i>
+            <span>Delete</span>
+          </a>
+          {% endif %}
+        </div>
+        {% if liked_users %}
+        <div class="mt-6">
+          <h3 class="text-lg font-semibold mb-2">People who liked this photo:</h3>
+          <ul class="list-disc list-inside">
+            {% for user in liked_users %}
+              <li>{{ user.username }}</li>
+            {% empty %}
+              <li>No likes yet.</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+    </main>
+    <footer>
+      <p>&copy; {% now "Y" %} Snap Space. All rights reserved.</p>
+    </footer>
+    <script src="{% static 'gallery/js/main.js' %}"></script>
+    <script src="{% static 'gallery/js/dark-mode.js' %}"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ once: true, duration: 700 });</script>
+    <script>
+    // AJAX Like Button
+    document.addEventListener('DOMContentLoaded', function() {
+      const likeForm = document.querySelector('.like-form');
+      if (likeForm) {
+        likeForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          fetch(this.action, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': likeForm.querySelector('[name=csrfmiddlewaretoken]').value,
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+            credentials: 'same-origin'
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              // Update like count
+              document.getElementById('like-count').textContent = data.likes_count;
+              // Toggle like button appearance
+              const likeBtn = document.getElementById('like-btn');
+              const likeIcon = document.getElementById('like-icon');
+              if (data.liked) {
+                likeBtn.classList.add('liked');
+                likeIcon.classList.remove('fa-heart-o');
+                likeIcon.classList.add('fa-heart');
+              } else {
+                likeBtn.classList.remove('liked');
+                likeIcon.classList.remove('fa-heart');
+                likeIcon.classList.add('fa-heart-o');
+              }
+            }
+          })
+          .catch(error => console.error('Error:', error));
+        });
+      }
+    });
+    </script>
+</body>
+</html>

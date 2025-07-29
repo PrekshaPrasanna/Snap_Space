@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Delete - {{ photo.title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'gallery/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'gallery/css/dark-mode.css' %}" id="dark-mode-styles">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+    :root {
+      --primary: #0E3746;
+      --accent: #BE2623;
+      --light-bg: #EAE8DC;
+      --main-bg: #F4F2EC;
+      --text-main: #0E3746;
+      --text-heading: #0E3746;
+    }
+    body {
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    section, .card, .photo-card {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(14,55,70,0.07);
+    }
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-heading) !important;
+    }
+    .btn, .btn-primary {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.8rem 2.1rem;
+      box-shadow: 0 2px 12px rgba(14,55,70,0.08);
+      border: none;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+      display: inline-block;
+      margin: 0.7rem 0.5rem 0 0.5rem;
+    }
+    .btn:hover, .btn-primary:hover {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+    }
+    .danger {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+    }
+    .danger:hover {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+    }
+    .confirm-delete-section {
+      max-width: 500px;
+      margin: 2rem auto;
+      padding: 2.5rem 2rem;
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(14,55,70,0.08);
+      text-align: center;
+    }
+    .confirm-delete-section img {
+      max-width: 220px;
+      max-height: 220px;
+      border-radius: 12px;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 2px 12px rgba(14,55,70,0.08);
+    }
+    @media (max-width: 600px) {
+      .confirm-delete-section {
+        padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+        max-width: 98vw;
+      }
+    }
+    body.dark-mode {
+      --primary: #F4F2EC;
+      --accent: #BE2623;
+      --light-bg: #0E3746;
+      --main-bg: #0E3746;
+      --text-main: #F4F2EC;
+      --text-heading: #EAE8DC;
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    body.dark-mode section, body.dark-mode .card, body.dark-mode .photo-card, body.dark-mode .confirm-delete-section {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      box-shadow: 0 2px 16px rgba(234,232,220,0.07);
+    }
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode .btn, body.dark-mode .btn-primary {
+      background: var(--accent) !important;
+      color: var(--main-bg) !important;
+    }
+    body.dark-mode .btn:hover, body.dark-mode .btn-primary:hover {
+      background: var(--text-heading) !important;
+      color: var(--light-bg) !important;
+    }
+    body.dark-mode .danger {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+    }
+    body.dark-mode .danger:hover {
+      background: var(--accent) !important;
+      color: var(--main-bg) !important;
+    }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar px-4 py-3 md:px-8">
+            <div class="navbar-brand">
+                <a href="{% url 'dashboard' %}">Snap Space</a>
+            </div>
+            <div class="navbar-menu flex items-center gap-4">
+                <form method="post" action="{% url 'dashboard' %}">{% csrf_token %}<button type="submit" class="btn">Home</button></form>
+                <form method="post" action="{% url 'my_photos' %}">{% csrf_token %}<button type="submit" class="btn">My Photos</button></form>
+                <form method="get" action="{% url 'album_list' %}"><button type="submit" class="btn">My Albums</button></form>
+                <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="btn">Logout</button></form>
+                <button id="dark-mode-toggle" class="dark-mode-toggle"><span class="mode-icon light">☀️</span><span class="mode-icon dark">🌙</span></button>
+            </div>
+        </nav>
+    </header>
+    <main>
+      <section class="confirm-delete-section">
+        <h1 class="text-3xl md:text-4xl font-extrabold leading-tight mb-6" style="color:var(--accent);">Confirm Delete</h1>
+        <p class="mb-4">Are you sure you want to delete this photo?</p>
+        <img src="{{ photo.image.url }}" alt="{{ photo.title }}">
+        <h2 class="mt-2 mb-4 text-xl font-bold">{{ photo.title }}</h2>
+        <form method="post" action="{% url 'delete_photo' photo.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn danger">Yes, Delete</button>
+          <a href="{% url 'photo_detail' photo.pk %}" class="btn">Cancel</a>
+        </form>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; {% now "Y" %} Snap Space. All rights reserved.</p>
+    </footer>
+    <script src="{% static 'gallery/js/main.js' %}"></script>
+    <script src="{% static 'gallery/js/dark-mode.js' %}"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ once: true, duration: 700 });</script>
+</body>
+</html> 

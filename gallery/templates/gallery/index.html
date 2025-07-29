@@ -1,0 +1,314 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <title>Snap Space</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{% static 'gallery/css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'gallery/css/dark-mode.css' %}" id="dark-mode-styles">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+    :root {
+      --primary: #0E3746;
+      --accent: #BE2623;
+      --light-bg: #EAE8DC;
+      --main-bg: #F4F2EC;
+      --text-main: #0E3746;
+      --text-heading: #0E3746;
+    }
+        body {
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    footer {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      box-shadow: 0 2px 8px rgba(14,55,70,0.04);
+    }
+    main, .main-content {
+      background: var(--main-bg) !important;
+    }
+    section, .card, .auth-container, .feature-card, .photo-card {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(14,55,70,0.07);
+    }
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-heading) !important;
+    }
+    a, .link {
+      color: var(--primary) !important;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+    a:hover, .link:hover {
+      color: var(--accent) !important;
+    }
+    .btn, .hero-btn, .btn-primary {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+      border-radius: 12px;
+      font-weight: 700;
+            font-size: 1.1rem;
+      padding: 0.8rem 2.1rem;
+      box-shadow: 0 2px 12px rgba(14,55,70,0.08);
+      border: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn:hover, .hero-btn:hover, .btn-primary:hover {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+    }
+        .btn-secondary {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+      border: 2px solid var(--primary) !important;
+    }
+    .btn-secondary:hover {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+    }
+    input, textarea, select {
+      background: var(--main-bg) !important;
+      color: var(--primary) !important;
+      border: 2px solid var(--light-bg) !important;
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .form-group label {
+      color: var(--primary) !important;
+    }
+    .shadow-2xl, .shadow-xl, .shadow-lg {
+      box-shadow: 0 8px 32px 0 rgba(14,55,70,0.13) !important;
+    }
+    .feature-icon, .icon, i, svg {
+      color: var(--accent) !important;
+    }
+    .message, .alert, .badge, .tooltip, .modal {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(14,55,70,0.08);
+    }
+    ::selection {
+      background: var(--accent);
+      color: var(--light-bg);
+    }
+    ::-webkit-scrollbar {
+      width: 10px;
+      background: var(--light-bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+            border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent);
+    }
+    .active, .selected, .current {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+    }
+    .divider {
+      border-color: var(--accent) !important;
+    }
+    /* DARK MODE OVERRIDES */
+    body.dark-mode {
+      --primary: #F4F2EC;
+      --accent: #BE2623;
+      --light-bg: #0E3746;
+      --main-bg: #0E3746;
+      --text-main: #F4F2EC;
+      --text-heading: #EAE8DC;
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    body.dark-mode section, body.dark-mode .card, body.dark-mode .auth-container, body.dark-mode .feature-card, body.dark-mode .photo-card {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      box-shadow: 0 2px 16px rgba(234,232,220,0.07);
+    }
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode a, body.dark-mode .link {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode a:hover, body.dark-mode .link:hover {
+      color: var(--accent) !important;
+    }
+    body.dark-mode .btn, body.dark-mode .hero-btn, body.dark-mode .btn-primary {
+      background: var(--accent) !important;
+      color: var(--main-bg) !important;
+    }
+    body.dark-mode .btn:hover, body.dark-mode .hero-btn:hover, body.dark-mode .btn-primary:hover {
+      background: var(--text-heading) !important;
+      color: var(--light-bg) !important;
+    }
+    body.dark-mode .btn-secondary {
+      background: var(--text-heading) !important;
+      color: var(--light-bg) !important;
+      border: 2px solid var(--accent) !important;
+    }
+    body.dark-mode .btn-secondary:hover {
+      background: var(--accent) !important;
+      color: var(--main-bg) !important;
+    }
+    body.dark-mode input, body.dark-mode textarea, body.dark-mode select {
+      background: var(--light-bg) !important;
+      color: var(--text-heading) !important;
+      border: 2px solid var(--accent) !important;
+    }
+    body.dark-mode input:focus, body.dark-mode textarea:focus, body.dark-mode select:focus {
+      border-color: var(--text-heading) !important;
+      box-shadow: 0 0 0 2px var(--text-heading);
+    }
+    body.dark-mode .form-group label {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode .feature-icon, body.dark-mode .icon, body.dark-mode i, body.dark-mode svg {
+      color: var(--accent) !important;
+    }
+    body.dark-mode .message, body.dark-mode .alert, body.dark-mode .badge, body.dark-mode .tooltip, body.dark-mode .modal {
+      background: var(--light-bg) !important;
+      color: var(--text-heading) !important;
+      box-shadow: 0 2px 8px rgba(234,232,220,0.08);
+    }
+    body.dark-mode ::selection {
+      background: var(--accent);
+      color: var(--main-bg);
+    }
+    body.dark-mode ::-webkit-scrollbar {
+      background: var(--light-bg);
+    }
+    body.dark-mode ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+    }
+    body.dark-mode ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-heading);
+    }
+    body.dark-mode .active, body.dark-mode .selected, body.dark-mode .current {
+      background: var(--accent) !important;
+      color: var(--main-bg) !important;
+    }
+    body.dark-mode .divider {
+      border-color: var(--accent) !important;
+    }
+    body.dark-mode footer {
+      background: var(--light-bg) !important;
+      color: var(--text-heading) !important;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <a href="{% url 'index' %}">Snap Space</a>
+            </div>
+            <div class="navbar-menu">
+                <button id="dark-mode-toggle" class="dark-mode-toggle" style="margin-left: 10px;">
+                    <span class="mode-icon light">☀️</span>
+                    <span class="mode-icon dark">🌙</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+<!-- Hero Section -->
+<section class="flex flex-col-reverse md:flex-row items-center justify-center px-4 md:px-8 py-10 md:py-20 max-w-6xl mx-auto min-h-[80vh] w-full overflow-hidden" style="min-height:80vh;">
+  <!-- Left -->
+  <div class="flex-1 flex flex-col justify-center items-center md:items-start space-y-6" data-aos="fade-right">
+    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-center md:text-left">
+      Preserve Your Memories<br class="hidden md:block"> in a Unique Way
+    </h1>
+    <p class="text-lg text-center md:text-left">
+      Create albums, share stories, and relive your best moments.
+    </p>
+    <div class="flex gap-4 mt-2 justify-center md:justify-start">
+      <a href="{% url 'register' %}" class="btn">Register</a>
+      <a href="{% url 'login' %}" class="btn btn-secondary">Login</a>
+    </div>
+  </div>
+  <!-- Right: Large, fuzzy, shadowed images, contained -->
+  <div class="flex-1 flex items-center justify-center max-w-full" data-aos="fade-left">
+    <div class="flex flex-wrap justify-center items-center gap-4 md:gap-8 w-full max-w-[500px] md:max-w-[600px]">
+      <img src="{% static 'gallery/img/sample1.jpg' %}" class="w-48 h-48 md:w-64 md:h-64 rounded-2xl shadow-2xl object-cover transform -rotate-6 -mt-2 md:-mt-6" alt="Sample 1">
+      <img src="{% static 'gallery/img/sample2.jpg' %}" class="w-40 h-40 md:w-56 md:h-56 rounded-2xl shadow-2xl object-cover transform rotate-12 md:ml-6 mt-6" alt="Sample 2">
+      <img src="{% static 'gallery/img/sample3.jpg' %}" class="w-36 h-36 md:w-48 md:h-48 rounded-2xl shadow-2xl object-cover transform -rotate-3 md:-ml-4 mb-4" alt="Sample 3">
+      <img src="{% static 'gallery/img/sample4.jpg' %}" class="w-48 h-48 md:w-64 md:h-64 rounded-2xl shadow-2xl object-cover transform rotate-3 md:ml-2 -mb-2" alt="Sample 4">
+    </div>
+  </div>
+</section>
+
+<!-- Featured Albums/Photos -->
+<section class="max-w-6xl mx-auto px-6 py-16 md:py-24 flex flex-col justify-center min-h-[60vh]" data-aos="fade-up">
+  <h2 class="text-2xl font-bold mb-10 text-center">Featured Albums</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+    <div class="card hover:shadow-2xl transition p-6 flex flex-col items-center">
+      <img src="{% static 'gallery/img/1.jpg' %}" class="w-full h-48 object-cover rounded-xl mb-4" alt="Album 1">
+      <h3 class="font-bold text-lg mb-1">Summer Adventures</h3>
+      <p class="text-sm text-center">A collection of sunny memories and outdoor fun.</p>
+    </div>
+    <div class="card hover:shadow-2xl transition p-6 flex flex-col items-center">
+      <img src="{% static 'gallery/img/2.jpg' %}" class="w-full h-48 object-cover rounded-xl mb-4" alt="Album 2">
+      <h3 class="font-bold text-lg mb-1">Family Moments</h3>
+      <p class="text-sm text-center">Cherished times with loved ones, big and small.</p>
+    </div>
+    <div class="card hover:shadow-2xl transition p-6 flex flex-col items-center">
+      <img src="{% static 'gallery/img/3.jpg' %}" class="w-full h-48 object-cover rounded-xl mb-4" alt="Album 3">
+      <h3 class="font-bold text-lg mb-1">Nature Wonders</h3>
+      <p class="text-sm text-center">Explore the beauty of the world around us.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="max-w-6xl mx-auto px-6 py-16 md:py-24 flex flex-col justify-center min-h-[40vh]" data-aos="fade-up">
+  <h2 class="text-2xl font-bold mb-10 text-center">Why Snap Space?</h2>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div class="feature-card flex flex-col items-center text-center">
+      <div class="feature-icon text-4xl mb-2">📸</div>
+      <div class="font-semibold mb-1">Easy Photo Upload</div>
+      <div class="text-sm">Upload and organize your photos in seconds.</div>
+    </div>
+    <div class="feature-card flex flex-col items-center text-center">
+      <div class="feature-icon text-4xl mb-2">🗂</div>
+      <div class="font-semibold mb-1">Smart Albums</div>
+      <div class="text-sm">Group photos by event, people, or location.</div>
+                </div>
+    <div class="feature-card flex flex-col items-center text-center">
+      <div class="feature-icon text-4xl mb-2">🔒</div>
+      <div class="font-semibold mb-1">Privacy Controls</div>
+      <div class="text-sm">Keep albums private or share with select friends.</div>
+                    </div>
+    <div class="feature-card flex flex-col items-center text-center">
+      <div class="feature-icon text-4xl mb-2">🌍</div>
+      <div class="font-semibold mb-1">Share with Friends</div>
+      <div class="text-sm">Easily share albums and memories online.</div>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+        <p>&copy; {% now "Y" %} Snap Space. All rights reserved.</p>
+        </footer>
+
+    <script src="{% static 'gallery/js/main.js' %}"></script>
+    <script src="{% static 'gallery/js/dark-mode.js' %}"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({ once: true, duration: 700 });
+    </script>
+</body>
+</html>

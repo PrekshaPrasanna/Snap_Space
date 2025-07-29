@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Snap Space{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'gallery/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'gallery/css/dark-mode.css' %}" id="dark-mode-styles">
+    <style>
+    :root {
+        --navbar-bg: #EAE8DC;
+        --navbar-logo: #0E3746;
+    }
+    body.dark-mode {
+        --navbar-bg: #0E3746;
+        --navbar-logo: #EAE8DC;
+    }
+    .navbar {
+        background: var(--navbar-bg) !important;
+        box-shadow: 0 2px 8px rgba(14,55,70,0.04);
+    }
+    .navbar-brand a {
+        color: var(--navbar-logo) !important;
+        font-weight: bold;
+        font-size: 1.7rem;
+        letter-spacing: 1px;
+        text-decoration: none;
+    }
+    .navbar-menu {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+    }
+    .nav-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 110px;
+        height: 36px;
+        background: #000;
+        color: #fff !important;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: background 0.2s, color 0.2s;
+        cursor: pointer;
+        text-align: center;
+        box-sizing: border-box;
+    }
+    .nav-btn:hover, .nav-btn:focus {
+        background: #fff;
+        color: #000 !important;
+        border: 1px solid #000;
+        text-decoration: none;
+    }
+    .navbar-menu form {
+        display: inline;
+        margin: 0;
+    }
+    .navbar-menu button.nav-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 110px;
+        height: 36px;
+        background: #000;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 1rem;
+        padding: 0;
+        text-align: center;
+        box-sizing: border-box;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+    }
+    .navbar-menu button.nav-btn:hover, .navbar-menu button.nav-btn:focus {
+        background: #fff;
+        color: #000;
+        border: 1px solid #000;
+    }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <a href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'index' %}{% endif %}">Snap Space</a>
+            </div>
+            <div class="navbar-menu">
+                {% if user.is_authenticated %}
+                {% if request.resolver_match.url_name != 'index' and request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'register' %}
+                <form method="post" action="{% url 'dashboard' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-btn">Home</button>
+                </form>
+                <form method="post" action="{% url 'my_photos' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-btn">My Photos</button>
+                </form>
+                <a href="{% url 'album_list' %}" class="nav-btn">My Albums</a>
+                <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-btn">Logout</button>
+                </form>
+                {% endif %}
+                <button id="dark-mode-toggle" class="dark-mode-toggle">
+                    <span class="mode-icon light">☀️</span>
+                    <span class="mode-icon dark">🌙</span>
+                </button>
+            </div>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; {% now "Y" %} Snap Space. All rights reserved.</p>
+    </footer>
+
+    <script src="{% static 'gallery/js/main.js' %}"></script>
+    <script src="{% static 'gallery/js/dark-mode.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends 'gallery/base.html' %}
+
+{% block title %}Logged Out{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-form">
+        <h2>Logged Out</h2>
+        <p>You have been successfully logged out.</p>
+        <p>Thank you for using Snap Space!</p>
+        <div class="form-actions">
+            <a href="{% url 'login' %}" class="btn btn-primary">Log In Again</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

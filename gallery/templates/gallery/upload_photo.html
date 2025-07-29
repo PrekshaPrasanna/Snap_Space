@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Snap Space - {% if edit_mode %}Edit Photo{% else %}Upload Photo{% endif %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'gallery/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'gallery/css/dark-mode.css' %}" id="dark-mode-styles">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+    :root {
+      --primary: #0E3746;
+      --accent: #BE2623;
+      --light-bg: #EAE8DC;
+      --main-bg: #F4F2EC;
+      --text-main: #0E3746;
+      --text-heading: #0E3746;
+    }
+    body {
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    .upload-container {
+      max-width: 500px;
+      margin: 2rem auto;
+      background: var(--light-bg);
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(14,55,70,0.08);
+      padding: 2.5rem 2rem;
+    }
+    .upload-container h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      color: var(--text-heading);
+    }
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .form-group label {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 0.3rem;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 2px solid var(--light-bg);
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      background: var(--main-bg);
+      color: var(--primary);
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .form-actions {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1.2rem;
+      margin-top: 1rem;
+      justify-content: center;
+    }
+    .btn {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.8rem 2.1rem;
+      box-shadow: 0 2px 12px rgba(14,55,70,0.08);
+      border: none;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn:hover {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+    }
+    .thumbnail {
+      max-width: 120px;
+      max-height: 120px;
+      border-radius: 10px;
+      margin-top: 0.5rem;
+    }
+    .error {
+      color: var(--accent);
+      font-size: 0.97rem;
+      margin: 0.2rem 0 0.5rem 0;
+      list-style: none;
+      padding: 0;
+    }
+    @media (max-width: 600px) {
+      .upload-container {
+        padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+        max-width: 98vw;
+      }
+    }
+    body.dark-mode {
+      --primary: #F4F2EC;
+      --accent: #BE2623;
+      --light-bg: #0E3746;
+      --main-bg: #0E3746;
+      --text-main: #F4F2EC;
+      --text-heading: #EAE8DC;
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    body.dark-mode .upload-container {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      box-shadow: 0 8px 32px 0 rgba(234,232,220,0.13);
+    }
+    body.dark-mode .upload-container h1,
+    body.dark-mode .form-group label {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode .form-group input,
+    body.dark-mode .form-group textarea,
+    body.dark-mode .form-group select {
+      background: var(--light-bg) !important;
+      color: var(--text-heading) !important;
+      border: 2px solid var(--accent) !important;
+    }
+    body.dark-mode .btn {
+      background: var(--accent) !important;
+      color: var(--main-bg) !important;
+    }
+    body.dark-mode .btn:hover {
+      background: var(--text-heading) !important;
+      color: var(--light-bg) !important;
+    }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar px-4 py-3 md:px-8">
+            <div class="navbar-brand">
+                <a href="{% url 'dashboard' %}">Snap Space</a>
+            </div>
+            <div class="navbar-menu flex items-center gap-4">
+                <form method="post" action="{% url 'dashboard' %}">{% csrf_token %}<button type="submit" class="btn">Home</button></form>
+                <form method="post" action="{% url 'my_photos' %}">{% csrf_token %}<button type="submit" class="btn">My Photos</button></form>
+                <form method="get" action="{% url 'album_list' %}"><button type="submit" class="btn">My Albums</button></form>
+                <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit" class="btn">Logout</button></form>
+                <button id="dark-mode-toggle" class="dark-mode-toggle"><span class="mode-icon light">☀️</span><span class="mode-icon dark">🌙</span></button>
+            </div>
+        </nav>
+    </header>
+    <main>
+      <div class="upload-container">
+        <h1>{% if edit_mode %}Edit Photo{% else %}Upload Photo{% endif %}</h1>
+        <form method="post" enctype="multipart/form-data" class="form">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="id_title">Title:</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+            <div class="error">{{ form.title.errors }}</div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="id_description">Description:</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+            <div class="error">{{ form.description.errors }}</div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="id_category">Category:</label>
+            {{ form.category }}
+            {% if form.category.errors %}
+            <div class="error">{{ form.category.errors }}</div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="id_image">Image:</label>
+            {{ form.image }}
+            {% if form.image.errors %}
+            <div class="error">{{ form.image.errors }}</div>
+            {% endif %}
+            {% if edit_mode and form.instance.image %}
+            <div class="current-image">
+              <p>Current image:</p>
+              <img src="{{ form.instance.image.url }}" alt="Current image" class="thumbnail">
+            </div>
+            {% endif %}
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn">{% if edit_mode %}Update{% else %}Upload{% endif %}</button>
+            <a href="{% if edit_mode %}{% url 'photo_detail' form.instance.pk %}{% else %}{% url 'my_photos' %}{% endif %}" class="btn">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </main>
+    <footer>
+      <p>&copy; {% now "Y" %} Snap Space. All rights reserved.</p>
+    </footer>
+    <script src="{% static 'gallery/js/main.js' %}"></script>
+    <script src="{% static 'gallery/js/dark-mode.js' %}"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ once: true, duration: 700 });</script>
+</body>
+</html>

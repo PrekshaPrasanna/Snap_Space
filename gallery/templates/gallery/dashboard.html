@@ -1,0 +1,372 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Snap Space - Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'gallery/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'gallery/css/dark-mode.css' %}" id="dark-mode-styles">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+    :root {
+      --primary: #0E3746;
+      --accent: #BE2623;
+      --light-bg: #EAE8DC;
+      --main-bg: #F4F2EC;
+      --text-main: #0E3746;
+      --text-heading: #0E3746;
+    }
+    body {
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    section, .card, .photo-card {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(14,55,70,0.07);
+    }
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-heading) !important;
+    }
+    a, .link {
+      color: var(--primary) !important;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+    a:hover, .link:hover {
+      color: var(--accent) !important;
+    }
+    .btn, .btn-primary {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.8rem 2.1rem;
+      box-shadow: 0 2px 12px rgba(14,55,70,0.08);
+      border: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn:hover, .btn-primary:hover {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+    }
+    .btn-sm {
+      font-size: 0.95rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+    }
+    input, textarea, select {
+      background: var(--main-bg) !important;
+      color: var(--primary) !important;
+      border: 2px solid var(--light-bg) !important;
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .search-btn {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+      border-radius: 8px;
+      font-weight: 600;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      margin-left: 0.5rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .search-btn:hover {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+    }
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 2rem;
+      margin-top: 2.5rem;
+    }
+    .photo-card {
+      background: var(--light-bg) !important;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px rgba(14,55,70,0.07);
+      padding: 1.2rem 1.2rem 1.2rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: box-shadow 0.2s;
+    }
+    .photo-card:hover {
+      box-shadow: 0 8px 32px 0 rgba(14,55,70,0.13);
+    }
+    .photo-image img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+    .photo-info {
+      width: 100%;
+      text-align: center;
+    }
+    .photo-owner, .photo-category {
+      font-size: 0.97rem;
+      color: var(--primary);
+      opacity: 0.8;
+      margin-bottom: 0.2rem;
+    }
+    .photo-actions {
+      margin-top: 0.7rem;
+      display: flex;
+      gap: 0.7rem;
+      justify-content: center;
+    }
+    .no-photos {
+      text-align: center;
+      margin-top: 2.5rem;
+      color: var(--primary);
+      opacity: 0.8;
+    }
+    @media (max-width: 700px) {
+      .photo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    /* DARK MODE OVERRIDES */
+    body.dark-mode {
+      --primary: #F4F2EC;
+      --accent: #BE2623;
+      --light-bg: #0E3746;
+      --main-bg: #0E3746;
+      --text-main: #F4F2EC;
+      --text-heading: #EAE8DC;
+      background: var(--main-bg) !important;
+      color: var(--text-main) !important;
+    }
+    body.dark-mode section, body.dark-mode .card, body.dark-mode .photo-card {
+      background: var(--light-bg) !important;
+      color: var(--primary) !important;
+      box-shadow: 0 2px 16px rgba(234,232,220,0.07);
+    }
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode a, body.dark-mode .link {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode a:hover, body.dark-mode .link:hover {
+      color: var(--accent) !important;
+    }
+    body.dark-mode .btn, body.dark-mode .btn-primary {
+      background: var(--accent) !important;
+      color: var(--main-bg) !important;
+    }
+    body.dark-mode .btn:hover, body.dark-mode .btn-primary:hover {
+      background: var(--text-heading) !important;
+      color: var(--light-bg) !important;
+    }
+    body.dark-mode .search-btn {
+      background: var(--primary) !important;
+      color: var(--light-bg) !important;
+    }
+    body.dark-mode .search-btn:hover {
+      background: var(--accent) !important;
+      color: var(--light-bg) !important;
+    }
+    body.dark-mode input, body.dark-mode textarea, body.dark-mode select {
+      background: var(--light-bg) !important;
+      color: var(--text-heading) !important;
+      border: 2px solid var(--accent) !important;
+    }
+    body.dark-mode input:focus, body.dark-mode textarea:focus, body.dark-mode select:focus {
+      border-color: var(--text-heading) !important;
+      box-shadow: 0 0 0 2px var(--text-heading);
+    }
+    body.dark-mode .photo-owner, body.dark-mode .photo-category {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode .no-photos {
+      color: var(--text-heading) !important;
+    }
+    body.dark-mode footer {
+      background: var(--light-bg) !important;
+      color: var(--text-heading) !important;
+      box-shadow: 0 2px 8px rgba(234,232,220,0.04);
+    }
+    .navbar-menu {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 110px;
+      height: 36px;
+      background: #000;
+      color: #fff !important;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .nav-btn:hover, .nav-btn:focus {
+      background: #fff;
+      color: #000 !important;
+      border: 1px solid #000;
+      text-decoration: none;
+    }
+    .navbar-menu form {
+      display: contents;
+      margin: 0;
+    }
+    .navbar-menu button.nav-btn {
+      width: 110px;
+      height: 36px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 0;
+      text-align: center;
+      box-sizing: border-box;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .navbar-menu button.nav-btn:hover, .navbar-menu button.nav-btn:focus {
+      background: #fff;
+      color: #000;
+      border: 1px solid #000;
+    }
+    .image-url-debug {
+      font-size: 0.9em;
+      color: #EAE8DC;
+      word-break: break-all;
+      margin-top: 4px;
+    }
+    body.dark-mode .image-url-debug {
+      color: #0E3746;
+    }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar px-4 py-3 md:px-8">
+            <div class="navbar-brand">
+                <a href="{% url 'dashboard' %}">Snap Space</a>
+            </div>
+            <div class="navbar-menu flex items-center gap-4">
+                <form method="post" action="{% url 'dashboard' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">Home</button>
+                </form>
+                <form method="post" action="{% url 'my_photos' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">My Photos</button>
+                </form>
+                <form method="get" action="{% url 'album_list' %}">
+                    <button type="submit" class="btn">My Albums</button>
+                </form>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn">Logout</button>
+                </form>
+                <button id="dark-mode-toggle" class="dark-mode-toggle">
+                    <span class="mode-icon light">☀️</span>
+                    <span class="mode-icon dark">🌙</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+      <section class="max-w-6xl mx-auto px-6 py-12 md:py-20 flex flex-col justify-center min-h-[80vh]">
+        <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-center mb-8">Preserve Your Memories in a Unique Way</h1>
+        <p class="text-lg text-center mb-8">Create albums, share stories, and relive your best moments.</p>
+<div class="dashboard">
+    <h1>Welcome, {{ user.username }}!</h1>
+    
+    <div class="gallery-controls">
+        <form method="get" class="search-form">
+            <div class="search-container">
+                <input type="text" name="search" placeholder="Search photos..." value="{{ search_query }}">
+                <select name="category" id="category-dropdown">
+                    <option value="">Select a Category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category.id|stringformat:"s" == selected_category %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                                
+                <button type="submit" class="search-btn">
+                    Search
+                </button>
+            </div>
+        </form>
+        <div class="gallery-actions">
+            <a href="{% url 'upload_photo' %}" class="btn btn-primary">Upload Photo</a>
+        </div>
+    </div>
+    
+    {% if photos %}
+    <div class="photo-grid">
+        {% for photo in photos %}
+        <div class="photo-card">
+            <div class="photo-image">
+                <a href="{% url 'photo_detail' photo.pk %}">
+                    <img src="{{ photo.image.url }}" alt="{{ photo.title }}">
+                </a>
+                      <div class="image-url-debug">{{ photo.image.url }}</div>
+            </div>
+            <div class="photo-info">
+                <h3>{{ photo.title }}</h3>
+                <p class="photo-owner">By: {{ photo.user.username }}</p>
+                {% if photo.category %}
+                <p class="photo-category">Category: {{ photo.category.name }}</p>
+                {% endif %}
+                <div class="photo-actions">
+                    <a href="{% url 'photo_detail' photo.pk %}" class="btn btn-sm">View</a>
+                    <a href="{{ photo.image.url }}" class="btn btn-sm" download>Download</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-photos">
+        <p>No photos found. {% if search_query or selected_category %}Try a different search or category.{% endif %}</p>
+    </div>
+    {% endif %}
+</div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; {% now "Y" %} Snap Space. All rights reserved.</p>
+    </footer>
+
+    <script src="{% static 'gallery/js/main.js' %}"></script>
+    <script src="{% static 'gallery/js/dark-mode.js' %}"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({ once: true, duration: 700 });
+    </script>
+</body>
+</html>

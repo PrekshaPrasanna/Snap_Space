@@ -1,0 +1,44 @@
+{% extends 'gallery/base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="profile">
+    <div class="profile-header">
+        <div class="profile-image">
+            {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" alt="Profile picture">
+            {% else %}
+            <div class="default-profile-image">{{ user.username|first }}</div>
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h1>{{ user.username }}</h1>
+            <p>{{ user.email }}</p>
+            {% if user.first_name or user.last_name %}
+            <p>{{ user.first_name }} {{ user.last_name }}</p>
+            {% endif %}
+            <a href="{% url 'edit_profile' %}" class="btn">Edit Profile</a>
+        </div>
+    </div>
+    
+    <div class="profile-content">
+        {% if profile.bio %}
+        <div class="profile-bio">
+            <h2>Bio</h2>
+            <p>{{ profile.bio }}</p>
+        </div>
+        {% endif %}
+        
+        <div class="profile-stats">
+            <h2>Stats</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-count">{{ user.photos.count }}</span>
+                    <span class="stat-label">Photos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
